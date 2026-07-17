@@ -1,0 +1,15 @@
+{
+  "name": "devsecops-demo",
+  "version": "1.0.0",
+  "description": "Node.js application for DevSecOps EKS Demo",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Sreehari Menon",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
