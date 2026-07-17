@@ -1,0 +1,28 @@
+trigger: 
+  - main
+
+pool: 
+  vmImage: 'ubuntu-latest'
+
+variables: 
+  - group: 'AWS-Variables'
+
+stages:
+  - stage: Build
+    displayName: "Checkout and Build"
+
+    jobs: 
+
+      - job: BuildJob
+        displayName: "Checkout Repository"
+
+        steps:
+        - checkout: self
+
+        - script: |
+            echo "Repository Checked Out Successfully"
+            pwd
+            ls -la
+          displayName: "Verify Repository Checkout"
+
+          
