@@ -19,10 +19,18 @@ stages:
         steps:
         - checkout: self
 
-        - script: |
-            echo "Repository Checked Out Successfully"
-            pwd
-            ls -la
-          displayName: "Verify Repository Checkout"
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '20.x'
+          displayName: 'Install Node.js'
 
+        - script: |
+            cd app
+            npm install
+          displayName: 'Install Node Dependencies'
+
+        - script: |
+            cd app
+            timeout 10s npm start
+          displayName: 'Verify Application Starts' 
           
