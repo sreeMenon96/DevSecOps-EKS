@@ -32,5 +32,17 @@ stages:
         - script: |
             cd app
             timeout 10s npm start || true
-          displayName: 'Verify Application Starts' 
+          displayName: 'Verify Application Starts'
+
+        - script: |
+            cd app
+            
+            docker build /
+              -t devsecops-app:(Build.BuildId) \
+              .
+          displayName: 'Build Docker Image'
+
+        - script: |
+            docker images
+          displayName: 'List Docker Images'
           
