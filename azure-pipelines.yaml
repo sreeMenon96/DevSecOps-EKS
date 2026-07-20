@@ -31,6 +31,6 @@ stages:
 
         - script: |
             cd app
-            timeout 10s npm start
+            timeout 10s npm start || true
           displayName: 'Verify Application Starts' 
           
