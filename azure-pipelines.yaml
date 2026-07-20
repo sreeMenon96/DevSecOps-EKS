@@ -36,9 +36,9 @@ stages:
 
         - script: |
             cd app
-            
-            docker build /
-              -t devsecops-app:(Build.BuildId) \
+
+            docker build \
+              -t devsecops-app:$(Build.BuildId) \
               .
           displayName: 'Build Docker Image'
 
