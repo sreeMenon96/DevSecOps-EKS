@@ -1,67 +1,50 @@
-trigger: 
+trigger:
   - main
 
-pool: 
-  vmImage: 'ubuntu-latest'
+pool:
+  vmImage: ubuntu-latest
 
-variables: 
-  - group: 'AWS-Variables'
+variables:
+- group: AWS-Variables
+
+- name: IMAGE_NAME
+  value: devsecops-app
+  
+- name: IMAGE_TAG
+  value: $(Build.BuildId)
 
 stages:
-  - stage: Build
-    displayName: "Checkout and Build"
 
-    jobs: 
+- stage: CI
+  displayName: "Continuous Integration"
 
-      - job: BuildJob
-        displayName: "Checkout Repository"
+  jobs:
 
-        steps:
-        - checkout: self
+  - job: BuildAndScan
+    displayName: "Build, Scan and Publish"
 
-        - task: NodeTool@0
-          inputs:
-            versionSpec: '20.x'
-          displayName: 'Install Node.js'
+    steps:
 
-        - script: |
-            cd app
-            npm install
-          displayName: 'Install Node Dependencies'
+    - checkout: self
 
-        - script: |
-            cd app
-            timeout 10s npm start || true
-          displayName: 'Verify Application Starts'
+    - task: NodeTool@0
+      displayName: Install Node.js
 
-        - script: |
-            cd app
+      inputs:
+        versionSpec: '20.x'
 
-            docker build \
-              -t devsecops-app:$(Build.BuildId) \
-              .
-          displayName: 'Build Docker Image'
+    - script: |
+        chmod +x scripts/*.sh
+      displayName: Give Execute Permission
 
-        - script: |
-            docker images
-          displayName: 'List Docker Images'
+    - script: |
+        ./scripts/build.sh
+      displayName: Build Application
 
-        - script: |
-            sudo apt-get update
-            sudo apt-get install -y wget
+    - script: |
+        ./scripts/install-trivy.sh
+      displayName: Install Trivy
 
-            wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.65.0_Linux-64bit.deb
-
-            sudo dpkg -i trivy_0.65.0_Linux-64bit.deb
-          displayName: 'Install Trivy'
-
-        - script: |
-            trivy --version
-          displayName: 'Verify Trivy Installation'
-
-        - script: |
-            trivy image devsecops-app:$(Build.BuildId)
-          displayName: 'Scan Docker Image'
-
-      
-          
+    - script: |
+        ./scripts/scan-image.sh
+      displayName: Scan Docker Image
