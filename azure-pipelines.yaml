@@ -45,4 +45,23 @@ stages:
         - script: |
             docker images
           displayName: 'List Docker Images'
+
+        - script: |
+            sudo apt-get update
+            sudo apt-get install -y wget
+
+            wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.65.0_Linux-64bit.deb
+
+            sudo dpkg -i trivy_0.65.0_Linux-64bit.deb
+          displayName: 'Install Trivy'
+
+        - script: |
+            trivy --version
+          displayName: 'Verify Trivy Installation'
+
+        - script: |
+            trivy image devsecops-app:$(Build.BuildId)
+          displayName: 'Scan Docker Image'
+
+      
           
