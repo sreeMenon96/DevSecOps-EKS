@@ -9,7 +9,7 @@ variables:
 
 - name: IMAGE_NAME
   value: devsecops-app
-  
+
 - name: IMAGE_TAG
   value: $(Build.BuildId)
 
@@ -48,3 +48,11 @@ stages:
     - script: |
         ./scripts/scan-image.sh
       displayName: Scan Docker Image
+
+    - script: |
+        ./scripts/install-aws-cli.sh
+      displayName: Install AWS CLI
+
+    - script: |
+        ./scripts/push-ecr.sh
+      displayName: Push Docker Image to ECR
