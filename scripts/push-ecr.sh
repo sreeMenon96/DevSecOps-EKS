@@ -41,5 +41,13 @@ docker tag \
 
 echo ""
 echo "========================================"
+echo "Pushing Docker Image to Amazon ECR"
+echo "========================================"
+
+docker push \
+    ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}
+
+echo ""
+echo "========================================"
 echo "Docker Image Successfully Published"
 echo "========================================"
