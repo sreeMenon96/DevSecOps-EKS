@@ -6,9 +6,11 @@ echo "========================================"
 echo "Configuring AWS Credentials"
 echo "========================================"
 
-export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+: "${AWS_ACCESS_KEY_ID:?Missing AWS_ACCESS_KEY_ID}"
+: "${AWS_SECRET_ACCESS_KEY:?Missing AWS_SECRET_ACCESS_KEY}"
+: "${AWS_REGION:?Missing AWS_REGION}"
+
+export AWS_DEFAULT_REGION="$AWS_REGION"
 
 echo ""
 echo "========================================"

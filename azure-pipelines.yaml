@@ -5,54 +5,62 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-- group: AWS-Variables
+  - group: AWS-Variables
 
-- name: IMAGE_NAME
-  value: devsecops-app
+  - name: IMAGE_NAME
+    value: devsecops-app
 
-- name: IMAGE_TAG
-  value: $(Build.BuildId)
+  - name: IMAGE_TAG
+    value: $(Build.BuildId)
 
 stages:
 
-- stage: CI
-  displayName: "Continuous Integration"
+  - stage: CI
+    displayName: "Continuous Integration"
 
-  jobs:
+    jobs:
 
-  - job: BuildAndScan
-    displayName: "Build, Scan and Publish"
+      - job: BuildAndScan
+        displayName: "Build, Scan and Publish"
 
-    steps:
+        steps:
 
-    - checkout: self
+          - checkout: self
 
-    - task: NodeTool@0
-      displayName: Install Node.js
+          - task: NodeTool@0
+            displayName: Install Node.js
 
-      inputs:
-        versionSpec: '20.x'
+            inputs:
+              versionSpec: '20.x'
 
-    - script: |
-        chmod +x scripts/*.sh
-      displayName: Give Execute Permission
+          - script: |
+              chmod +x scripts/*.sh
+            displayName: Give Execute Permission
 
-    - script: |
-        ./scripts/build.sh
-      displayName: Build Application
+          - script: |
+              ./scripts/build.sh
+            displayName: Build Application
 
-    - script: |
-        ./scripts/install-trivy.sh
-      displayName: Install Trivy
+          - script: |
+              ./scripts/install-trivy.sh
+            displayName: Install Trivy
 
-    - script: |
-        ./scripts/scan-image.sh
-      displayName: Scan Docker Image
+          - script: |
+              ./scripts/scan-image.sh
+            displayName: Scan Docker Image
 
-    - script: |
-        ./scripts/install-aws-cli.sh
-      displayName: Install AWS CLI
+          - script: |
+              ./scripts/install-aws-cli.sh
+            displayName: Install AWS CLI
 
-    - script: |
-        ./scripts/push-ecr.sh
-      displayName: Push Docker Image to ECR
+          - script: |
+              ./scripts/push-ecr.sh
+            displayName: Push Docker Image to Amazon ECR
+            env:
+              AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+              AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+              AWS_REGION: $(AWS_REGION)
+              AWS_ACCOUNT_ID: $(AWS_ACCOUNT_ID)
+              ECR_REPOSITORY: $(ECR_REPOSITORY)
+              IMAGE_NAME: $(IMAGE_NAME)
+              IMAGE_TAG: $(IMAGE_TAG)
