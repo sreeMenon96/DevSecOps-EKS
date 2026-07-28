@@ -31,8 +31,8 @@ spec:
 
             - containerPort: {{ .Values.containerPort }}
 
-          resources: 
-      {{ toYaml .Values.resources | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
 
           livenessProbe:
             httpGet:
