@@ -20,7 +20,7 @@ echo "========================================"
 echo "Deploying Application using Helm"
 echo "========================================"
 
-helm upgrade --install devsecops-app helm/devsecops-app \
+helm upgrade --install devsecops helm/devsecops-app \
   --set image.repository=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY} \
   --set image.tag=${IMAGE_TAG}
 
