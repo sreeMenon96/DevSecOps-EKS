@@ -64,3 +64,42 @@ stages:
               ECR_REPOSITORY: $(ECR_REPOSITORY)
               IMAGE_NAME: $(IMAGE_NAME)
               IMAGE_TAG: $(IMAGE_TAG)
+  - stage: CD
+    displayName: "Continuous Deployment"
+
+    dependsOn: CI
+    condition: succeeded()
+
+    jobs:
+
+    - job: DeployToEKS
+      displayName: "Deploy to Amazon EKS"
+
+      steps:
+        
+        - checkout: self
+
+        - script: |
+            chmod +x scripts/*.sh
+          displayName: Give Execute Permission
+
+        - script: |
+            ./scripts/install-aws-cli.sh
+          displayName: Install AWS CLI
+
+        - script: |
+            ./scripts/install-kubectl.sh
+          displayName: Install kubectl
+
+        - script: |
+            ./scripts/install-helm.sh
+          displayName: Install Helm
+
+        - script: |
+            ./scripts/deploy.sh
+          displayName: Configure EKS Cluster
+          env:
+            AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+            AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+            AWS_REGION: $(AWS_REGION)
+            EKS_CLUSTER_NAME: $(EKS_CLUSTER_NAME)
